@@ -1,0 +1,13 @@
+
+services:
+  accesspoint:
+    image: grafana2ntfy
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    network_mode: host
+    ports:
+      - 4116:4116
+        
