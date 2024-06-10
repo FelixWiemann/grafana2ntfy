@@ -1,6 +1,5 @@
 const axios = require('axios').default
 const http = require('http');
-const { getPriority } = require('os');
 
 data = []
 
@@ -8,7 +7,6 @@ ntfy = process.env.NTFY_INSTANCE
 
 post_options = {
     baseURL: process.env.NTFY_INSTANCE,
-    port: 8082,
     method: 'POST',
     url: '/Plants',
     headers: {
@@ -16,8 +14,6 @@ post_options = {
         'Priority': "default"
     }
 };
-token = process.env.NTFY_TOKEN
-// console.log(`Bearer ${token}`)
 
 getPrio = (state) => {
     switch (state) {
@@ -45,28 +41,10 @@ handlePost = (req, res) => {
         res.end()
     }
     catch (error) {
-        console.error("got error processing plant " + error)
+        console.error("got error processing post " + error)
         
     }
     return
-}
-
-handleGet = (req, res) => {
-    if (req.url==="/metrics") {
-        try{
-
-            res.writeHead(200,{'Content-Type': 'text/plain'})
-            data.forEach(element => {
-                res.write(`plant_ground_humidity{plant_id="${element.plant_id}"} ${element.humidity} ${element.timestamp}\n`)
-            });
-            res.end()
-            data = []
-        } catch (error) {
-            console.error("got error processing metrics " + error)
-        }
-        return
-    }
-    console.log("got invalid get request on " + req.url)
 }
 
 handleError = (req, res) => {
@@ -82,9 +60,6 @@ http.createServer((req, res) => {
         case "POST":
             //console.log(req.bo)
             handlePost(req, res)
-            break
-        case "GET":
-            handleGet(req, res)
             break
         default:
             handleError(req, res)
